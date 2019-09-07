@@ -41,18 +41,10 @@ handleCitySubmit = (e) => {
       throw Error('doesn\'t work')
     })
     .then(res => res.json())
-    .then(data => {
-      this.setState({
-        error: false
-      })
-    })
-    .catch(err => {
-    console.log(err)
-  this.setState({
-    err: true
-  })
+    .then(data => console.log(data))
+    .catch(err => console.log(err))
 
-})
+}
 
 
 
