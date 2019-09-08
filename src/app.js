@@ -18,7 +18,7 @@ state = {
   temp: '',
   pressure: '',
   wind: '',
-  er: ''
+  err: false
 }
 
 handleInputChange = (e) => {
@@ -31,7 +31,7 @@ handleInputChange = (e) => {
 }
 handleCitySubmit = (e) => {
   e.preventDefault()
-  const API = `http://api.openweathermap.org/data/2.5/weather?q=${this.state.value}&APPID=${APIkey}&units=metric}`
+  const API = `http://api.openweathermap.org/data/2.5/weather?q=${this.state.value}&APPID=${APIkey}&unit=metric}`
 
   fetch(API)
     .then(res => {
@@ -41,9 +41,30 @@ handleCitySubmit = (e) => {
       throw Error('doesn\'t work')
     })
     .then(res => res.json())
-    .then(data => console.log(data))
-    .catch(err => console.log(err))
+    .then(data => {
+      const time = new Date().toLocaleString()
+      this.setState({
+        err: false,
+        date: time,
+        sunrise: data.sys.sunrise,
+        sunset: data.sys.sunset,
+        temp: data.main.temp,
+        pressure: data.main.pressure,
+        wind: data.wind.speed,
+        city: this.state.value
 
+      })
+
+
+
+    })
+    .catch(err => {
+      console.log(err)
+      this.setState(prevState => ({
+        err: true,
+        city: prevState.value
+      }))
+    })
 }
 
 
@@ -57,7 +78,7 @@ render () {
       submit={this.handleCitySubmit}
       />
 
-      <Result />
+      <Result weather = {this.state}/>
     </div>
   )
 
